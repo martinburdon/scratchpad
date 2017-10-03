@@ -29461,7 +29461,7 @@ var _actions = __webpack_require__(229);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var NotesList = exports.NotesList = (0, _reactRedux.connect)(function mapStateToProps(state) {
-  return { todos: state };
+  return { notes: state };
 }, function mapDispatchToProps(dispatch) {
   return {
     addNote: function addNote(text) {
@@ -29525,11 +29525,11 @@ function NotesList(props) {
     _react2.default.createElement(
       'ul',
       null,
-      notes.map(function (n) {
+      notes.map(function (t) {
         return _react2.default.createElement(
           'li',
-          { key: n.get('id') },
-          _react2.default.createElement(Note, { note: n.toJS() })
+          { key: t.get('id') },
+          _react2.default.createElement(Note, { note: t.toJS() })
         );
       })
     )

@@ -4,7 +4,7 @@ import { addNote } from './actions';
 
 export const NotesList = connect(
   function mapStateToProps(state) {
-    return { todos: state };
+    return { notes: state };
   },
   function mapDispatchToProps(dispatch) {
     return {

@@ -26,9 +26,9 @@ export function NotesList(props) {
         placeholder='Add note'
         onKeyDown={onSubmit} />
       <ul>
-        {[notes].map(n => (
-          <li key={n.get('id')}>
-            <Note note={n.toJS()} />
+        {notes.map(t => (
+          <li key={t.get('id')}>
+            <Note note={t.toJS()} />
           </li>
         ))}
       </ul>
