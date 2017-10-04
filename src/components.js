@@ -1,12 +1,14 @@
 import React from 'react';
 
+// Individual Note
 export function Note(props) {
-  const { note } = props;
-  return <span>{note.text}</span>;
+  const { text, onClick } = props;
+  return <li onClick={onClick}>{text}</li>;
 }
 
+// List of Notes
 export function NotesList(props) {
-  const { notes, addNote } = props;
+  const { notes, addNote, selectNote } = props;
 
   const onSubmit = (event) => {
     const input = event.target;
@@ -21,17 +23,26 @@ export function NotesList(props) {
   };
 
   return (
-    <div className='note'>
+    <div>
       <input type='text'
         placeholder='Add note'
         onKeyDown={onSubmit} />
       <ul>
-        {notes.map(t => (
-          <li key={t.get('id')}>
-            <Note note={t.toJS()} />
-          </li>
+        {notes.map((note) => (
+          <Note key={note.id} {...note} onClick={() => selectNote(note.id)} />
         ))}
       </ul>
+    </div>
+  );
+}
+
+export function NoteArea(props) {
+  const { note = false } = props;
+  return (
+    <div>
+      {
+        note ? <Note key={note.id} {...note} /> : 'Please select a note'
+      }
     </div>
   );
 }
