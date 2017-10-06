@@ -24469,10 +24469,11 @@ function notes() {
 
   switch (action.type) {
     case 'ADD_NOTE':
-      return [].concat(_toConsumableArray(state), [{
+      var text = action.text || 'Add some text...';
+      return [{
         id: action.id,
-        text: action.text
-      }]);
+        text: text
+      }].concat(_toConsumableArray(state));
     case 'UPDATE_NOTE':
       return state.map(function (item) {
         if (item.id !== action.id) {
@@ -24604,22 +24605,16 @@ function NotesList(props) {
       selectNote = props.selectNote;
 
 
-  var onSubmit = function onSubmit(event) {
-    var input = event.target;
-    var text = input.value;
-    var isEnterKey = event.which == 13;
-    var isLongEnough = text.length > 0;
-
-    if (isEnterKey && isLongEnough) {
-      input.value = '';
-      addNote(text);
-    }
-  };
-
   return _react2.default.createElement(
     'notes-list',
     null,
-    _react2.default.createElement('input', { type: 'text', placeholder: 'Add note', onKeyDown: onSubmit }),
+    _react2.default.createElement(
+      'button',
+      { onClick: function onClick() {
+          return addNote();
+        } },
+      'Add note +'
+    ),
     _react2.default.createElement(
       'ul',
       null,

@@ -19,15 +19,33 @@ note-area {
 scratchpad-container {
   height: 40rem;
   margin: auto;
-  width: 40rem;
+  width: 60rem;
 }
 
 notes-list {
+  background: linear-gradient(to bottom, #36D1DC 0%, #5B86E5 100%);
+  border-radius: 1rem 0 0 1rem;
+  color: #fff;
   flex-direction: column;
+  padding: 1rem;
+  width: 25rem;
+}
+
+notes-list ul {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+notes-list ul li {
+  cursor: pointer;
+  padding: 0.5rem 0 0;
 }
 
 note-area {
-  border: 1px solid rgb(0, 188, 212);
+  border: 1px solid rgba(54, 209, 220, 0.25);
+  border-left: none;
+  border-radius: 0 1rem 1rem 0;
   padding: 2rem;
   width: 100%;
 }

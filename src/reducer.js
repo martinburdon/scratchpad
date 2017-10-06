@@ -12,12 +12,13 @@ function selectedNote(state = false, action) {
 function notes(state = [], action) {
   switch (action.type) {
     case 'ADD_NOTE':
+      const text = action.text || 'Add some text...';
       return [
-        ...state,
         {
           id: action.id,
-          text: action.text
-        }
+          text
+        },
+        ...state
       ]
     case 'UPDATE_NOTE':
       return state.map(item => {
