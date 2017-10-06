@@ -1,34 +1,6 @@
 import { combineReducers } from 'redux';
 
-// const init = {
-//   notes: [{ id: 0, text: 'test' }],
-//   selectedIndex: false
-// };
-
-// export default function reducer(state = init, action) {
-//   switch (action.type) {
-//     case 'ADD_NOTE':
-//       return Object.assign({}, state, {
-//         notes: [
-//           ...state.notes,
-//           {
-//             id: action.id,
-//             text: action.text
-//           }
-//         ]
-//       })
-//     case 'UPDATE_SELECTED':
-//       return Object.assign({}, state, {
-//         selectedIndex: action.selected
-//       })
-//     default:
-//       return state;
-//   }
-// }
-
-
 function selectedNote(state = false, action) {
-  console.log('hi ', action);
   switch (action.type) {
     case 'SELECT_NOTE':
       return action.id
@@ -37,7 +9,7 @@ function selectedNote(state = false, action) {
   }
 }
 
-function notes(state = [{ id: 0, text: 'sdfsdf' }], action) {
+function notes(state = [], action) {
   switch (action.type) {
     case 'ADD_NOTE':
       return [
@@ -47,6 +19,14 @@ function notes(state = [{ id: 0, text: 'sdfsdf' }], action) {
           text: action.text
         }
       ]
+    case 'UPDATE_NOTE':
+      return state.map(item => {
+        if (item.id !== action.id) {
+          return item;
+        }
+
+        return Object.assign(item, { text: action.text})
+      });
     default:
       return state
   }

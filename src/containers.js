@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import * as components from './components';
-import { addNote, selectNote } from './actions';
+import { addNote, selectNote, updateNote } from './actions';
 
 export const NotesList = connect(
   function mapStateToProps(state) {
@@ -22,6 +22,11 @@ export const NoteArea = connect(
 
     return {
       note: note[0]
+    };
+  },
+  function mapDispatchToProps(dispatch) {
+    return {
+      updateNote: (id, text) => dispatch(updateNote(id, text))
     };
   }
 )(components.NoteArea);

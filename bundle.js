@@ -11146,17 +11146,22 @@ var _reducer = __webpack_require__(225);
 
 var _reducer2 = _interopRequireDefault(_reducer);
 
-var _containers = __webpack_require__(227);
+var _containers = __webpack_require__(226);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var store = (0, _redux.createStore)(_reducer2.default);
+var defaultState = {
+  notes: [{ id: 0, text: 'sdfsdf' }],
+  selectedNote: false
+};
+
+var store = (0, _redux.createStore)(_reducer2.default, defaultState);
 
 (0, _reactDom.render)(_react2.default.createElement(
   _reactRedux.Provider,
   { store: store },
   _react2.default.createElement(
-    'div',
+    'scratchpad-container',
     null,
     _react2.default.createElement(_containers.NotesList, null),
     _react2.default.createElement(_containers.NoteArea, null)
@@ -24446,38 +24451,10 @@ var _redux = __webpack_require__(51);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-// const init = {
-//   notes: [{ id: 0, text: 'test' }],
-//   selectedIndex: false
-// };
-
-// export default function reducer(state = init, action) {
-//   switch (action.type) {
-//     case 'ADD_NOTE':
-//       return Object.assign({}, state, {
-//         notes: [
-//           ...state.notes,
-//           {
-//             id: action.id,
-//             text: action.text
-//           }
-//         ]
-//       })
-//     case 'UPDATE_SELECTED':
-//       return Object.assign({}, state, {
-//         selectedIndex: action.selected
-//       })
-//     default:
-//       return state;
-//   }
-// }
-
-
 function selectedNote() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   var action = arguments[1];
 
-  console.log('hi ', action);
   switch (action.type) {
     case 'SELECT_NOTE':
       return action.id;
@@ -24487,7 +24464,7 @@ function selectedNote() {
 }
 
 function notes() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [{ id: 0, text: 'sdfsdf' }];
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var action = arguments[1];
 
   switch (action.type) {
@@ -24496,6 +24473,14 @@ function notes() {
         id: action.id,
         text: action.text
       }]);
+    case 'UPDATE_NOTE':
+      return state.map(function (item) {
+        if (item.id !== action.id) {
+          return item;
+        }
+
+        return Object.assign(item, { text: action.text });
+      });
     default:
       return state;
   }
@@ -24509,8 +24494,7 @@ var notesApp = (0, _redux.combineReducers)({
 exports.default = notesApp;
 
 /***/ }),
-/* 226 */,
-/* 227 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24523,11 +24507,11 @@ exports.NoteArea = exports.NotesList = undefined;
 
 var _reactRedux = __webpack_require__(91);
 
-var _components = __webpack_require__(228);
+var _components = __webpack_require__(227);
 
 var components = _interopRequireWildcard(_components);
 
-var _actions = __webpack_require__(229);
+var _actions = __webpack_require__(228);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -24554,10 +24538,16 @@ var NoteArea = exports.NoteArea = (0, _reactRedux.connect)(function mapStateToPr
   return {
     note: note[0]
   };
+}, function mapDispatchToProps(dispatch) {
+  return {
+    updateNote: function updateNote(id, text) {
+      return dispatch((0, _actions.updateNote)(id, text));
+    }
+  };
 })(components.NoteArea);
 
 /***/ }),
-/* 228 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24581,12 +24571,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Individual Note
 function Note(props) {
-  var text = props.text,
-      onClick = props.onClick;
+  var id = props.id,
+      text = props.text,
+      list = props.list,
+      onClick = props.onClick,
+      updateNote = props.updateNote;
+
+  var onKeyUp = function onKeyUp(event) {
+    var content = document.getElementById('temp').textContent;
+    updateNote(id, content);
+  };
+
+  if (list) {
+    return _react2.default.createElement(
+      'li',
+      { onClick: onClick },
+      text
+    );
+  }
 
   return _react2.default.createElement(
-    'li',
-    { onClick: onClick },
+    'div',
+    { id: 'temp', contentEditable: true, onKeyUp: onKeyUp },
     text
   );
 }
@@ -24611,16 +24617,14 @@ function NotesList(props) {
   };
 
   return _react2.default.createElement(
-    'div',
+    'notes-list',
     null,
-    _react2.default.createElement('input', { type: 'text',
-      placeholder: 'Add note',
-      onKeyDown: onSubmit }),
+    _react2.default.createElement('input', { type: 'text', placeholder: 'Add note', onKeyDown: onSubmit }),
     _react2.default.createElement(
       'ul',
       null,
       notes.map(function (note) {
-        return _react2.default.createElement(Note, _extends({ key: note.id }, note, { onClick: function onClick() {
+        return _react2.default.createElement(Note, _extends({ list: 'true', key: note.id }, note, { onClick: function onClick() {
             return selectNote(note.id);
           } }));
       })
@@ -24630,17 +24634,18 @@ function NotesList(props) {
 
 function NoteArea(props) {
   var _props$note = props.note,
-      note = _props$note === undefined ? false : _props$note;
+      note = _props$note === undefined ? false : _props$note,
+      updateNote = props.updateNote;
 
   return _react2.default.createElement(
-    'div',
+    'note-area',
     null,
-    note ? _react2.default.createElement(Note, _extends({ key: note.id }, note)) : 'Please select a note'
+    note ? _react2.default.createElement(Note, _extends({ key: note.id }, note, { updateNote: updateNote })) : 'Please select a note'
   );
 }
 
 /***/ }),
-/* 229 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24651,6 +24656,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.addNote = addNote;
 exports.selectNote = selectNote;
+exports.updateNote = updateNote;
 var uid = function uid() {
   return Math.random().toString(34).slice(2);
 };
@@ -24664,10 +24670,17 @@ function addNote(text) {
 }
 
 function selectNote(id) {
-  console.log(id);
   return {
     type: 'SELECT_NOTE',
     id: id
+  };
+}
+
+function updateNote(id, text) {
+  return {
+    type: 'UPDATE_NOTE',
+    id: id,
+    text: text
   };
 }
 

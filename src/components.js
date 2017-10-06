@@ -2,8 +2,17 @@ import React from 'react';
 
 // Individual Note
 export function Note(props) {
-  const { text, onClick } = props;
-  return <li onClick={onClick}>{text}</li>;
+  const { id, text, list, onClick, updateNote } = props;
+  const onKeyUp = (event) => {
+    const content = document.getElementById('temp').textContent;
+    updateNote(id, content);
+  };
+
+  if (list) {
+    return <li onClick={onClick}>{text}</li>
+  }
+
+  return <div id="temp" contentEditable onKeyUp={onKeyUp}>{text}</div>
 }
 
 // List of Notes
@@ -23,26 +32,24 @@ export function NotesList(props) {
   };
 
   return (
-    <div>
-      <input type='text'
-        placeholder='Add note'
-        onKeyDown={onSubmit} />
+    <notes-list>
+      <input type='text' placeholder='Add note' onKeyDown={onSubmit} />
       <ul>
         {notes.map((note) => (
-          <Note key={note.id} {...note} onClick={() => selectNote(note.id)} />
+          <Note list="true" key={note.id} {...note} onClick={() => selectNote(note.id)} />
         ))}
       </ul>
-    </div>
+    </notes-list>
   );
 }
 
 export function NoteArea(props) {
-  const { note = false } = props;
+  const { note = false, updateNote } = props;
   return (
-    <div>
+    <note-area>
       {
-        note ? <Note key={note.id} {...note} /> : 'Please select a note'
+        note ? <Note key={note.id} {...note} updateNote={updateNote} /> : 'Please select a note'
       }
-    </div>
+    </note-area>
   );
 }

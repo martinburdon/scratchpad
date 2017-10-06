@@ -5,14 +5,19 @@ import { Provider } from 'react-redux';
 import reducer from './reducer';
 import { NotesList, NoteArea } from './containers';
 
-const store = createStore(reducer);
+const defaultState = {
+  notes: [{ id: 0, text: 'sdfsdf' }],
+  selectedNote: false
+};
+
+const store = createStore(reducer, defaultState);
 
 render(
   <Provider store={store}>
-    <div>
+    <scratchpad-container>
       <NotesList />
       <NoteArea />
-    </div>
+    </scratchpad-container>
   </Provider>,
   document.getElementById('app')
 );

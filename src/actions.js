@@ -9,9 +9,16 @@ export function addNote(text) {
 }
 
 export function selectNote(id) {
-  console.log(id);
   return {
     type: 'SELECT_NOTE',
     id
+  };
+}
+
+export function updateNote(id, text) {
+  return {
+    type: 'UPDATE_NOTE',
+    id,
+    text
   };
 }
